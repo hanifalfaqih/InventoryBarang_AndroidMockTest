@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "792732298392",
+    "project_id": "inventorybarang-1fc16",
+    "storage_bucket": "inventorybarang-1fc16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:792732298392:android:7e4bbe343ba3f9b15574ed",
+        "android_client_info": {
+          "package_name": "id.allana.inventorybarang_androidmocktest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "792732298392-coflinug135almr74flmkeijbrh1qftd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.allana.inventorybarang_androidmocktest",
+            "certificate_hash": "40dc8184ad8e37a913eccccf18f66d16f68bd21c"
+          }
+        },
+        {
+          "client_id": "792732298392-qg4hd9flgluvuvet6prhrdhn0764796t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS3oiCMLHb5NRuxdFPpZqzDG7bYhYtYwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "792732298392-qg4hd9flgluvuvet6prhrdhn0764796t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
