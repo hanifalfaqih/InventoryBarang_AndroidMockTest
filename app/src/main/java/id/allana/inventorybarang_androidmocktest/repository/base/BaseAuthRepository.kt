@@ -7,4 +7,6 @@ interface BaseAuthRepository {
 
     suspend fun loginUser(email: String, password: String): Resource<AuthResult>
 
+    fun logoutUser()
+
 }

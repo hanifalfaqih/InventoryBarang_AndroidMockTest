@@ -19,6 +19,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "ADMIN_UID", " \"nKVjOocHFPcUAfWOejAk5AkgB0w1\"")
     }
 
     buildTypes {

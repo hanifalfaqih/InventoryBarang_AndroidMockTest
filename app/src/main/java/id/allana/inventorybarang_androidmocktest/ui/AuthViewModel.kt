@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.AuthResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import id.allana.inventorybarang_androidmocktest.di.ApplicationModule_ProvideMainDispatcherFactory
 import id.allana.inventorybarang_androidmocktest.repository.AuthRepository
 import id.allana.inventorybarang_androidmocktest.util.Event
 import id.allana.inventorybarang_androidmocktest.util.Resource
@@ -30,6 +29,10 @@ class AuthViewModel @Inject constructor(
             val result = authRepository.loginUser(email, password)
             _loginStatusUser.postValue(Event(result))
         }
+    }
+
+    fun logoutUser() {
+        authRepository.logoutUser()
     }
 
 }

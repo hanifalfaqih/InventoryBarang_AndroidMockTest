@@ -11,7 +11,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AuthRepository @Inject constructor(): BaseAuthRepository {
+class AuthRepository @Inject constructor() : BaseAuthRepository {
 
     private val auth = Firebase.auth
 
@@ -24,4 +24,7 @@ class AuthRepository @Inject constructor(): BaseAuthRepository {
         }
     }
 
+    override fun logoutUser() {
+        auth.signOut()
+    }
 }

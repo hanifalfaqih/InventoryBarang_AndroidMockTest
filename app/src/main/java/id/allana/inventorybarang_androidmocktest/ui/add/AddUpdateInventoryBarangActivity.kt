@@ -8,8 +8,8 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import id.allana.inventorybarang_androidmocktest.data.model.InventoryBarang
 import id.allana.inventorybarang_androidmocktest.databinding.ActivityAddUpdateInventoryBarangBinding
@@ -149,16 +149,14 @@ class AddUpdateInventoryBarangActivity : AppCompatActivity() {
         val dialogTitle = "Batal"
         val dialogMessage =
             "Apa kamu yakin akan membatalkan tanpa menyimpan? Semua yang sudah ditulis dalam form akan dihapus"
-        val alertDialogBuilder = AlertDialog.Builder(this)
-        with(alertDialogBuilder) {
+        MaterialAlertDialogBuilder(this).apply {
             setTitle(dialogTitle)
             setMessage(dialogMessage)
             setCancelable(false)
-            setPositiveButton("Ya") { _, _ ->
+            setPositiveButton("Batal") { _, _ ->
                 finish()
             }
             setNegativeButton("Tidak") { dialog, _ -> dialog.cancel() }
-        }
-        alertDialogBuilder.create().show()
+        }.create().show()
     }
 }

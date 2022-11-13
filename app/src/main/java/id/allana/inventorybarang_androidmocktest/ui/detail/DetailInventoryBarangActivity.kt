@@ -10,7 +10,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import id.allana.inventorybarang_androidmocktest.BuildConfig
 import id.allana.inventorybarang_androidmocktest.data.model.InventoryBarang
 import id.allana.inventorybarang_androidmocktest.databinding.ActivityDetailInventoryBarangBinding
 import id.allana.inventorybarang_androidmocktest.ui.InventoryBarangViewModel
@@ -30,6 +32,18 @@ class DetailInventoryBarangActivity : AppCompatActivity() {
     private var data: InventoryBarang? = null
     private val viewModel: InventoryBarangViewModel by viewModels()
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+    private val currentUser = FirebaseAuth.getInstance().currentUser
+
+    override fun onStart() {
+        super.onStart()
+        if (currentUser?.uid == BuildConfig.ADMIN_UID) {
+            binding.btnDelete.visibility = View.VISIBLE
+            binding.btnEdit.visibility = View.VISIBLE
+        } else {
+            binding.btnDelete.visibility = View.INVISIBLE
+            binding.btnEdit.visibility = View.INVISIBLE
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
