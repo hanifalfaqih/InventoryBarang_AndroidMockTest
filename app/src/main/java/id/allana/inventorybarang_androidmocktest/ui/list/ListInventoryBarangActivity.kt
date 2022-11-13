@@ -20,21 +20,26 @@ import id.allana.inventorybarang_androidmocktest.util.ext.snackbar
 class ListInventoryBarangActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityListInventoryBarangBinding
-    private lateinit var adapter: ListInventoryBarangAdapter
+    private lateinit var inventoryBarangAdapter: ListInventoryBarangAdapter
     private val viewModel: InventoryBarangViewModel by viewModels()
 
     private val currentUser = FirebaseAuth.getInstance().currentUser
+
+    override fun onStart() {
+        super.onStart()
+        if (currentUser?.uid == "nKVjOocHFPcUAfWOejAk5AkgB0w1") binding.fabAdd.visibility = View.VISIBLE else binding.fabAdd.visibility = View.GONE
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityListInventoryBarangBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (currentUser?.uid == "nKVjOocHFPcUAfWOejAk5AkgB0w1") binding.fabAdd.visibility = View.VISIBLE else binding.fabAdd.visibility = View.GONE
-
-        viewModel.getListInventoryBarang()
-        adapter = ListInventoryBarangAdapter()
         subscribeToObserver()
+        viewModel.getListInventoryBarang()
+
+        inventoryBarangAdapter = ListInventoryBarangAdapter()
+        setupList()
 
         val activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -55,7 +60,7 @@ class ListInventoryBarangActivity : AppCompatActivity() {
     private fun setupList() {
         binding.rvInventoryBarang.apply {
             layoutManager = LinearLayoutManager(this@ListInventoryBarangActivity)
-            adapter = adapter
+            adapter = inventoryBarangAdapter
             setHasFixedSize(true)
         }
     }
@@ -71,7 +76,7 @@ class ListInventoryBarangActivity : AppCompatActivity() {
             }
         ) { list ->
             binding.pbInventoryBarang.visibility = View.INVISIBLE
-            adapter.inventoryBarang = list
+            inventoryBarangAdapter.inventoryBarang = list
             if (list.isNotEmpty()) {
                 setupList()
             } else {

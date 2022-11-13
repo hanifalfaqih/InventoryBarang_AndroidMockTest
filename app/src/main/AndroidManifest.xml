@@ -16,7 +16,7 @@
         android:theme="@style/Theme.InventoryBarang_AndroidMockTest"
         tools:targetApi="31">
         <activity
-            android:name=".DetailInventoryBarangActivity"
+            android:name=".ui.detail.DetailInventoryBarangActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

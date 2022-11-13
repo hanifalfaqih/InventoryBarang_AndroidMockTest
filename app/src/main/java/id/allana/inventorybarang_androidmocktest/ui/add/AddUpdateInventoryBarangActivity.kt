@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import id.allana.inventorybarang_androidmocktest.data.model.InventoryBarang
 import id.allana.inventorybarang_androidmocktest.databinding.ActivityAddUpdateInventoryBarangBinding
 import id.allana.inventorybarang_androidmocktest.ui.InventoryBarangViewModel
+import id.allana.inventorybarang_androidmocktest.util.DateHelper
 import id.allana.inventorybarang_androidmocktest.util.EventObserver
 import id.allana.inventorybarang_androidmocktest.util.ext.snackbar
 
@@ -29,7 +30,6 @@ class AddUpdateInventoryBarangActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddUpdateInventoryBarangBinding
     private val viewModel: InventoryBarangViewModel by viewModels()
     private var data: InventoryBarang? = null
-    private var id: String? = null
     private var isEdit = false
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -43,7 +43,6 @@ class AddUpdateInventoryBarangActivity : AppCompatActivity() {
         handleOnBackPressedCallback()
 
         data = intent.getParcelableExtra(EXTRA_INVENTORY_BARANG)
-        id = data?.id
         if (data != null) isEdit = true else data = InventoryBarang()
 
         val actionBarTitle: String
@@ -67,13 +66,14 @@ class AddUpdateInventoryBarangActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding.btnAddUpdate.text = btnTitle
+
         binding.btnAddUpdate.setOnClickListener {
             handleAddUpdate()
         }
     }
 
     private fun handleOnBackPressedCallback() {
-        val callback: OnBackPressedCallback = object: OnBackPressedCallback(true) {
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 showAlertDialog()
             }
@@ -87,20 +87,23 @@ class AddUpdateInventoryBarangActivity : AppCompatActivity() {
     private fun handleAddUpdate() {
         val namaBarang = binding.etNamaBarang.text.toString().trim()
         val jumlahBarang = binding.etJumlahBarang.text.toString().trim()
-        val namaPemasok = binding.etNamaPemasok.text.toString().trim()
+        val pemasok = binding.etNamaPemasok.text.toString().trim()
         val infoTambahan = binding.etInfoTambahan.text.toString().trim()
 
+        val map = mutableMapOf<String, Any>()
+        map["namaBarang"] = namaBarang
+        map["jumlahBarang"] = jumlahBarang
+        map["pemasok"] = pemasok
+        map["infoTambahan"] = infoTambahan
+        map["tanggal"] = DateHelper.getCurrentDate()
+
         if (isEdit) {
-            id?.let {
-                viewModel.updateInventoryBarang(
-                    it, namaBarang, jumlahBarang, namaPemasok, infoTambahan
-                )
-            }
+            viewModel.updateInventoryBarang(data!!, map)
             val intent = Intent()
             intent.putExtra(EXTRA_INVENTORY_BARANG, data)
             setResult(RESULT_UPDATE)
         } else {
-            viewModel.addInventoryBarang(namaBarang, jumlahBarang, namaPemasok, infoTambahan)
+            viewModel.addInventoryBarang(namaBarang, jumlahBarang, pemasok, infoTambahan)
             setResult(RESULT_ADD)
         }
     }
@@ -144,7 +147,8 @@ class AddUpdateInventoryBarangActivity : AppCompatActivity() {
 
     private fun showAlertDialog() {
         val dialogTitle = "Batal"
-        val dialogMessage = "Apa kamu yakin akan membatalkan tanpa menyimpan? Semua yang sudah ditulis dalam form akan dihapus"
+        val dialogMessage =
+            "Apa kamu yakin akan membatalkan tanpa menyimpan? Semua yang sudah ditulis dalam form akan dihapus"
         val alertDialogBuilder = AlertDialog.Builder(this)
         with(alertDialogBuilder) {
             setTitle(dialogTitle)

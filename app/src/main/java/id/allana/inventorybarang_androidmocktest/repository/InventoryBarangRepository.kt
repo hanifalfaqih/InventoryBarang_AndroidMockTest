@@ -2,10 +2,8 @@ package id.allana.inventorybarang_androidmocktest.repository
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import id.allana.inventorybarang_androidmocktest.data.model.InventoryBarang
 import id.allana.inventorybarang_androidmocktest.repository.base.BaseInventoryBarangRepository
@@ -20,45 +18,28 @@ import javax.inject.Inject
 
 class InventoryBarangRepository @Inject constructor(): BaseInventoryBarangRepository {
 
-    private val database = Firebase.database.getReference("InventoryBarang")
+    private val data = Firebase.firestore.collection("InventoryBarang")
 
     override suspend fun getAllInventoryBarang(): Resource<List<InventoryBarang?>> {
         return withContext(Dispatchers.IO) {
             safeCallNetwork {
-                val listInventoryBarang = mutableListOf<InventoryBarang?>()
-                database.addValueEventListener(object: ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            for (data in snapshot.children) {
-                                val item = data.getValue(InventoryBarang::class.java)
-                                listInventoryBarang.add(item)
-                            }
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) { }
-
-                })
+                val listInventoryBarang = data
+                    .get()
+                    .await()
+                    .toObjects(InventoryBarang::class.java)
                 Resource.Success(listInventoryBarang)
             }
         }
     }
 
-    override suspend fun getDetailInventoryBarang(id: String): Resource<InventoryBarang> {
+    override suspend fun getDetailInventoryBarang(id: String): Resource<InventoryBarang?> {
         return withContext(Dispatchers.IO) {
             safeCallNetwork {
-                var dataDetail = InventoryBarang()
-                database.addValueEventListener(object: ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            for (data in snapshot.children)
-                                dataDetail = data.child(id).getValue(InventoryBarang::class.java)!!
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) { }
-
-                })
+                val dataDetail = data
+                    .document(id)
+                    .get()
+                    .await()
+                    .toObject(InventoryBarang::class.java)
                 Resource.Success(dataDetail)
             }
         }
@@ -84,30 +65,34 @@ class InventoryBarangRepository @Inject constructor(): BaseInventoryBarangReposi
                     tanggal = tanggal,
                     infoTambahan = infoTambahan
                 )
-                database.child(idInventoryBarang).setValue(addInventoryBarang).await()
+                data.document(idInventoryBarang).set(addInventoryBarang).await()
                 Resource.Success(Any())
             }
         }
     }
 
-
     override suspend fun updateInventoryBarang(
-        updateId: String,
-        updateNamaBarang: String,
-        updateJumlahBarang: String,
-        updatePemasok: String,
-        updateInfoTambahan: String
+        oldData: InventoryBarang,
+        newData: Map<String, Any>
     ): Resource<Any> {
         return withContext(Dispatchers.IO) {
             safeCallNetwork {
-                val data = mapOf(
-                    "id" to updateId,
-                    "namaBarang" to updateNamaBarang,
-                    "jumlahBarang" to updateJumlahBarang,
-                    "pemasok" to updatePemasok,
-                    "infoTambahan" to updateInfoTambahan
-                )
-                database.child(updateId).updateChildren(data)
+                val dataQuery = data
+                    .whereEqualTo("id", oldData.id)
+                    .get()
+                    .await()
+                if (dataQuery.documents.isNotEmpty()) {
+                    for (document in dataQuery) {
+                        try {
+                            data.document(oldData.id).set(
+                                newData,
+                                SetOptions.merge()
+                            ).await()
+                        } catch (e: Exception) {
+                            Resource.Error(e.toString(), null)
+                        }
+                    }
+                }
                 Resource.Success(Any())
             }
         }
@@ -116,8 +101,8 @@ class InventoryBarangRepository @Inject constructor(): BaseInventoryBarangReposi
     override suspend fun deleteInventoryBarang(inventoryBarang: InventoryBarang): Resource<Any> {
         return withContext(Dispatchers.IO) {
             safeCallNetwork {
-                database.child(inventoryBarang.tanggal).removeValue()
-                Resource.Success(Any())
+                data.document(inventoryBarang.id).delete().await()
+                Resource.Success(inventoryBarang)
             }
         }
     }

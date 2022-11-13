@@ -25,8 +25,8 @@ class InventoryBarangViewModel @Inject constructor(
     private val _getListInventoryBarangStatus = MutableLiveData<Event<Resource<List<InventoryBarang?>>>>()
     val getListInventoryBarangStatus: LiveData<Event<Resource<List<InventoryBarang?>>>> = _getListInventoryBarangStatus
 
-    private val _getDetailInventoryBarangStatus = MutableLiveData<Event<Resource<InventoryBarang>>>()
-    val getDetailInventoryBarangStatus: LiveData<Event<Resource<InventoryBarang>>> = _getDetailInventoryBarangStatus
+    private val _getDetailInventoryBarangStatus = MutableLiveData<Event<Resource<InventoryBarang?>>>()
+    val getDetailInventoryBarangStatus: LiveData<Event<Resource<InventoryBarang?>>> = _getDetailInventoryBarangStatus
 
     private val _deleteInventoryBarangStatus = MutableLiveData<Event<Resource<Any>>>()
     val deleteInventoryBarangStatus: LiveData<Event<Resource<Any>>> = _deleteInventoryBarangStatus
@@ -70,20 +70,13 @@ class InventoryBarangViewModel @Inject constructor(
     }
 
     fun updateInventoryBarang(
-        updateId: String,
-        updateNamaBarang: String,
-        updateJumlahBarang: String,
-        updatePemasok: String,
-        updateInfoTambahan: String
+        oldData: InventoryBarang,
+        newData: Map<String, Any>
     ) {
         _updateInventoryBarangStatus.postValue(Event(Resource.Loading()))
         viewModelScope.launch(dispatcherFactory) {
             val result = inventoryBarangRepository.updateInventoryBarang(
-                updateId,
-                updateNamaBarang,
-                updateJumlahBarang,
-                updatePemasok,
-                updateInfoTambahan
+                oldData, newData
             )
             _updateInventoryBarangStatus.postValue(Event(Resource.Success(result)))
         }

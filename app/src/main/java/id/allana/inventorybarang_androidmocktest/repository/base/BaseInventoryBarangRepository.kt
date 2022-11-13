@@ -15,15 +15,12 @@ interface BaseInventoryBarangRepository {
     ): Resource<Any>
 
     suspend fun updateInventoryBarang(
-        updateId: String,
-        updateNamaBarang: String,
-        updateJumlahBarang: String,
-        updatePemasok: String,
-        updateInfoTambahan: String
+        oldData: InventoryBarang,
+        newData: Map<String, Any>
     ): Resource<Any>
 
     suspend fun deleteInventoryBarang(inventoryBarang: InventoryBarang): Resource<Any>
 
-    suspend fun getDetailInventoryBarang(id: String): Resource<InventoryBarang>
+    suspend fun getDetailInventoryBarang(id: String): Resource<InventoryBarang?>
 
 }

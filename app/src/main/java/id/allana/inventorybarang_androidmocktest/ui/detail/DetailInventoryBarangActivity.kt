@@ -93,11 +93,11 @@ class DetailInventoryBarangActivity : AppCompatActivity() {
             }
         ) { data ->
             binding.pbDetail.visibility = View.INVISIBLE
-            binding.tvNamaBarang.text = data.namaBarang
-            binding.tvBanyakBarang.text = data.jumlahBarang
-            binding.tvNamaPemasok.text = data.pemasok
-            binding.tvTanggal.text = data.tanggal
-            binding.tvInfoTambahan.text = data.infoTambahan
+            binding.tvNamaBarang.text = data?.namaBarang
+            binding.tvBanyakBarang.text = data?.jumlahBarang
+            binding.tvNamaPemasok.text = data?.pemasok
+            binding.tvTanggal.text = data?.tanggal
+            binding.tvInfoTambahan.text = data?.infoTambahan
 
         })
     }
